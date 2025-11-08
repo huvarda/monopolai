@@ -16533,21 +16533,92 @@ exports.Monopoly = void 0;
 var _core = require("boardgame.io/core");
 function generateBoard() {
   return [{
-    name: 'Go',
-    type: 'start'
+    name: 'Start',
+    type: 'start',
+    amount: 200
   }, {
-    name: 'Mediterranean Ave',
+    name: 'A1',
     type: 'plot',
     price: 60
   }, {
-    name: 'Income Tax',
-    type: 'lawsuit',
-    amount: 200
+    name: 'A2',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'Blank',
+    type: 'placeholder'
+  }, {
+    name: 'B1',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'B2',
+    type: 'plot',
+    price: 60
+  }, {
+    name: '\"Jail\"',
+    type: 'placeholder'
+  }, {
+    name: 'C1',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'C2',
+    type: 'plot',
+    price: 60
   }, {
     name: 'Chance',
     type: 'chance'
   }, {
-    name: 'Baltic Ave',
+    name: 'D1',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'D2',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'MVIDEO Investment',
+    type: 'mvideo'
+  }, {
+    name: 'E1',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'E2',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'Chance',
+    type: 'chance'
+  }, {
+    name: 'F1',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'F2',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'Go to Jail',
+    type: 'to_jail'
+  }, {
+    name: 'G1',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'G2',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'Blank',
+    type: 'placeholder'
+  }, {
+    name: 'H1',
+    type: 'plot',
+    price: 60
+  }, {
+    name: 'H2',
     type: 'plot',
     price: 60
   }];
@@ -16578,21 +16649,27 @@ const Monopoly = exports.Monopoly = {
     dice: null,
     board: generateBoard()
   }),
+  turn: {
+    minMoves: 1,
+    maxMoves: 1
+  },
   moves: {
-    rollDice(G, ctx) {
+    doTurn({
+      G,
+      playerID
+    }, ctx) {
       const roll = Math.ceil(Math.random() * 6);
       G.dice = roll;
-    },
-    move(G, ctx) {
-      const player = G.players[ctx.currentPlayer];
+      console.log(playerID);
+      const player = G.players[playerID];
+      console.log(player);
+      var prevpos = player.position;
       player.position = (player.position + G.dice) % G.board.length;
       const square = G.board[player.position];
-
-      // simple example: handle what happens when landing on a property
-      if (square.type === 'tax') {
-        player.money -= square.amount;
-      }
-      if (square.type === 'property' && !square.owner) {
+      if (player.position < prevpos) {
+        //we know we passed or landed on go
+        player.money += 200;
+      } else if (square.type === 'property' && !square.owner) {
         // optionally buy it
         if (player.money >= square.price) {
           square.owner = ctx.currentPlayer;
@@ -16600,12 +16677,6 @@ const Monopoly = exports.Monopoly = {
         }
       }
     }
-  },
-  turn: {
-    onBegin(G, ctx) {
-      G.dice = null; // reset dice roll
-    },
-    moveLimit: 2 // roll and move
   }
 };
 },{"boardgame.io/core":"node_modules/boardgame.io/dist/esm/core.js"}],"src/App.js":[function(require,module,exports) {
@@ -16616,7 +16687,8 @@ var _Game = require("./Game");
 class TicTacToeClient {
   constructor() {
     this.client = (0, _client.Client)({
-      game: _Game.Monopoly
+      game: _Game.Monopoly,
+      numPlayers: 4
     });
     this.client.start();
   }
@@ -16647,7 +16719,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50502" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51502" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

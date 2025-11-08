@@ -2,7 +2,7 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 
 function generateBoard() {
   return [
-    { name: 'Start', type: 'start' },
+    { name: 'Start', type: 'start', amount: 200},
     { name: 'A1', type: 'plot', price: 60 },
     { name: 'A2', type: 'plot', price: 60 },
     { name: 'Blank', type: 'placeholder'},
@@ -30,6 +30,7 @@ function generateBoard() {
 }
 
 export const Monopoly = {
+
   setup: () => ({
     players: [
       { name: "ClosedAI", position: 0, money: 1500, owned_property:[]},
@@ -40,22 +41,28 @@ export const Monopoly = {
     dice: null,
     board: generateBoard(),
   }),
-
+  
+  turn: {
+    minMoves: 1,
+    maxMoves: 1,
+  },
+  
   moves: {
-    rollDice(G, ctx) {
+    doTurn({G, playerID}, ctx) {
       const roll = Math.ceil(Math.random() * 6);
       G.dice = roll;
-    },
 
-    move(G, ctx) {
-      const player = G.players[ctx.currentPlayer];
+      console.log(playerID);
+      const player = G.players[playerID];
+      console.log(player);
+      var prevpos = player.position;
       player.position = (player.position + G.dice) % G.board.length;
       const square = G.board[player.position];
-      
-      if (square.type === 'tax') {
-        player.money -= square.amount;
+
+      if (player.position < prevpos) {//we know we passed or landed on go
+        player.money += 200;
       }
-      if (square.type === 'property' && !square.owner) {
+      else if (square.type === 'property' && !square.owner) {
         // optionally buy it
         if (player.money >= square.price) {
           square.owner = ctx.currentPlayer;
@@ -63,28 +70,6 @@ export const Monopoly = {
         }
       }
     },
-  },
-
-  turn: {
-    stages: {
-      roll: {
-        moves: { rollDice: true },
-        next: 'move',
-      },
-      move: {
-        moves: { move: true },
-        next: 'end',
-      },  
-      end: {
-        onBegin(G, ctx) {
-          ctx.events.endTurn();
-        }
-      },
-    },
-    onBegin(G, ctx) {
-      ctx.events.setStage('roll');
-    },
-  },
   },
 
 };
