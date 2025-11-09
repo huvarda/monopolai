@@ -34,10 +34,10 @@ export const Monopoly = {
   setup: () => ({
     choice: null,
     players: [
-      { name: "ClosedAI", position: 0, money: 1500, owned_property:[]},
-      { name: "Epistem", position: 0, money: 1500, owned_property:[]},
-      { name: "Amethyst", position: 0, money: 1500, owned_property:[]},
-      { name: "Macrosoft", position: 0, money: 1500, owned_property:[]},
+      { name: "ClosedAI", position: 0, money: 1500, owned_property:[], image:"/ClosedAI.webp", shamt:0},
+      { name: "Epistem", position: 0, money: 1500, owned_property:[], image:"/Epistem.webp", shamt: 10},
+      { name: "Amethyst", position: 0, money: 1500, owned_property:[], image:"/Amethyst.webp", shamt: 20},
+      { name: "Macrosoft", position: 0, money: 1500, owned_property:[], image:"/Macrosoft.webp", shamt: 30},
     ],
     dice: null,
     board: generateBoard(),

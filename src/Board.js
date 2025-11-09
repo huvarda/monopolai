@@ -1,5 +1,32 @@
 import React from 'react';
 
+let tiles = [{x: 850, y: 850},
+{x: 700, y: 850},
+{x: 580, y: 850},
+{x: 464, y: 850},
+{x: 360, y: 850},
+{x: 240, y: 850},
+{x: 57, y: 885},
+{x: 100, y: 706},
+{x: 100, y: 587},
+{x: 100, y: 472},
+{x: 100, y: 350},
+{x: 100, y: 250},
+{x: 100, y: 250},
+{x: 100, y: 100},
+{x: 240, y: 100},
+{x: 360, y: 100},
+{x: 464, y: 100},
+{x: 580, y: 100},
+{x: 690, y: 100},
+{x: 850, y: 100},
+{x: 850, y: 250},
+{x: 850, y: 360},
+{x: 850, y: 480},
+{x: 850, y: 588},
+{x: 850, y: 700},
+
+]
 
 export function Board({ ctx, G, moves }) {
   return (
@@ -12,15 +39,19 @@ export function Board({ ctx, G, moves }) {
       />
     {G.players.map((p) => {
         //const tile = tiles.find((t) => t.id === piece.tile);
-        var tile = {x:p.position*100, y:10};
+        var tile = tiles[p.position] //{x:p.position*100, y:10};
+        console.log(p.image);
         return (
           <img
-            src={"/boobs.png"}
+            src={p.image}
             alt={p.name}
             style={{
               position: 'absolute',
               left: tile.x,
-              top: tile.y,
+              top: tile.y+p.shamt,
+              width: 50,
+              height: 50,
+
               transform: 'translate(-50%, -50%)', // center on tile
             }}
           />
