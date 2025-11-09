@@ -29,7 +29,10 @@ let tiles = [{x: 850, y: 850},
 ]
 
 export function Board({ ctx, G, moves }) {
+  const sortedPlayers = [...G.players].sort((a, b) => b.money - a.money);
+
   return (
+    <div>
     <div style={{ position: 'relative'}}>
       {/* Board background */}
       <img
@@ -38,6 +41,9 @@ export function Board({ ctx, G, moves }) {
         style={{ width: 950, height: 950, position: 'absolute', top: 0, left: 0 }}
       />
     {G.players.map((p) => {
+        if(p.name==="MVIDEO"){
+          return(<div />) 
+        }
         //const tile = tiles.find((t) => t.id === piece.tile);
         var tile = tiles[p.position] //{x:p.position*100, y:10};
         console.log(p.image);
@@ -51,12 +57,23 @@ export function Board({ ctx, G, moves }) {
               top: tile.y+p.shamt,
               width: 50,
               height: 50,
-
+              transition: 'left 0.5s ease, top 0.5s ease',
               transform: 'translate(-50%, -50%)', // center on tile
             }}
           />
         );
       })}
+    </div>
+      <div id="scoreboard" style={{position: 'absolute', left: 1000, top: 60}}>
+        <h2>Scoreboard</h2>
+      <ul>
+        {sortedPlayers.map((player, index) => (
+          <li key={index}>
+            {index + 1}. {player.name} - ${player.money}
+          </li>
+        ))}
+      </ul>
+      </div>
     </div>
   )
     
