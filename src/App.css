@@ -1,0 +1,25 @@
+.game-container {
+  display: flex;
+  width: 1000px;
+  height: 1000px;
+  /* height: 100vh; */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 20px;
+}
+
+/* Board area where your game renders */
+.board-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
