@@ -3,35 +3,36 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 function generateBoard() {
   return [
     { name: 'Start', type: 'start', amount: 200},
-    { name: 'A1', type: 'plot', price: 60 },
-    { name: 'A2', type: 'plot', price: 60 },
+    { name: 'A1', type: 'plot', price: 100 , cost: 100},
+    { name: 'A2', type: 'plot', price: 120 , cost: 100},
     { name: 'Blank', type: 'placeholder'},
-    { name: 'B1', type: 'plot', price: 60 },
-    { name: 'B2', type: 'plot', price: 60 },
+    { name: 'B1', type: 'plot', price: 200 , cost: 100},
+    { name: 'B2', type: 'plot', price: 210 , cost: 100},
     { name: '\"Jail\"', type: 'placeholder'},
-    { name: 'C1', type: 'plot', price: 60 },
-    { name: 'C2', type: 'plot', price: 60 },
+    { name: 'C1', type: 'plot', price: 270 , cost: 100},
+    { name: 'C2', type: 'plot', price: 290 , cost: 100},
     { name: 'Chance', type: 'chance' },
-    { name: 'D1', type: 'plot', price: 60 },
-    { name: 'D2', type: 'plot', price: 60 },
+    { name: 'D1', type: 'plot', price: 320 , cost: 100},
+    { name: 'D2', type: 'plot', price: 360 , cost: 100},
     { name: 'MVIDEO Investment', type: 'mvideo' },
-    { name: 'E1', type: 'plot', price: 60 },
-    { name: 'E2', type: 'plot', price: 60 },
+    { name: 'E1', type: 'plot', price: 410 , cost: 100},
+    { name: 'E2', type: 'plot', price: 450 , cost: 100},
     { name: 'Chance', type: 'chance' },
-    { name: 'F1', type: 'plot', price: 60 },
-    { name: 'F2', type: 'plot', price: 60 },
+    { name: 'F1', type: 'plot', price: 500 , cost: 100},
+    { name: 'F2', type: 'plot', price: 520 , cost: 100},
     { name: 'Go to Jail', type: 'to_jail'},
-    { name: 'G1', type: 'plot', price: 60 },
-    { name: 'G2', type: 'plot', price: 60 },
+    { name: 'G1', type: 'plot', price: 570 , cost: 100},
+    { name: 'G2', type: 'plot', price: 600 , cost: 100},
     { name: 'Blank', type: 'placeholder'},
-    { name: 'H1', type: 'plot', price: 60 },
-    { name: 'H2', type: 'plot', price: 60 },
+    { name: 'H1', type: 'plot', price: 700 , cost: 100},
+    { name: 'H2', type: 'plot', price: 800 , cost: 100},
   ];
 }
 
 export const Monopoly = {
 
   setup: () => ({
+    choice: null,
     players: [
       { name: "ClosedAI", position: 0, money: 1500, owned_property:[]},
       { name: "Epistem", position: 0, money: 1500, owned_property:[]},
@@ -43,6 +44,7 @@ export const Monopoly = {
   }),
   
   turn: {
+    onBegin: (G, ctx) => {G.choice = null},
     minMoves: 1,
     maxMoves: 1,
   },
@@ -62,9 +64,33 @@ export const Monopoly = {
       if (player.position < prevpos) {//we know we passed or landed on go
         player.money += 200;
       }
-      else if (square.type === 'plot' && !square.owner) {
-        // TODO
+      if (square.type === 'plot' && !square.owner) {
+        if (player.money >= square.price) {
+          player.money -= square.price;
+          square.owner = playerID;
+          player.owned_property.push(square.name);
+        }
       }
+
+      else if (square.type === 'plot' && square.owner !== player.name) {
+        var cost = square.cost;
+        if (square.hasDataCenter) {
+          cost *= 2;
+        }
+        player.money -= cost;
+        G.players[square.owner].money += cost;
+
+      }
+
+      else if (square.type === "to_jail") {
+        player.position = 6;
+      }
+      
+      else if (square.type === "mvideo") {
+        player.money += 500;
+      }
+        // TODO
+
     },
 
   },
